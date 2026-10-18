@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+    =============================================================================
+      CUSTOMER SERVICE CENTER - ROUND ROBIN SCHEDULING SYSTEM
+    =============================================================================
+      HOW TO RUN THIS WEBSITE LOCALLY:
+      
+      Option 1 (Recommended - Quick Start with Maven):
+        mvn spring-boot:run
+
+      Option 2 (Build Executable JAR and Run):
+        mvn clean package -DskipTests
+        java -jar target/customer-service-scheduler-1.0.0.jar
+
+      OPEN IN YOUR BROWSER:
+        http://localhost:8080
+
+      PREREQUISITES:
+        - Java JDK 17+ (verify with: java -version)
+        - Apache Maven 3.8+ (verify with: mvn -version)
+    =============================================================================
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+        <relativePath/>
+    </parent>
+    <groupId>com.spos</groupId>
+    <artifactId>customer-service-scheduler</artifactId>
+    <version>1.0.0</version>
+    <name>customer-service-scheduler</name>
+    <description>Customer Service Center - Round Robin Scheduling Algorithm</description>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

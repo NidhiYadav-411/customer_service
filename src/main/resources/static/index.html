@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service Center - Round Robin Query Scheduling</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid px-lg-4">
+            <a class="navbar-brand" href="index.html">
+                <div class="brand-icon">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <div>
+                    <div>Customer Service Center</div>
+                    <small class="text-muted fw-normal" style="font-size: 0.72rem; display: block; margin-top: -3px;">Round Robin Query Scheduler</small>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html"><i class="bi bi-grid-1x2-fill me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="queries.html"><i class="bi bi-chat-left-text me-1"></i> Customer Queries</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="agents.html"><i class="bi bi-people me-1"></i> Service Agents</a>
+                    </li>
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                        <a class="btn btn-nav-visualize" href="visualize.html">
+                            <i class="bi bi-play-circle-fill me-1"></i> Visualize Round Robin Process
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header / Hero -->
+    <section class="page-hero">
+        <div class="container px-lg-4">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="badge bg-primary-subtle text-primary mb-2 fw-semibold px-3 py-1 rounded-pill">
+                        <i class="bi bi-cpu me-1"></i> Operating Systems Viva Project &bull; Java Spring Boot
+                    </div>
+                    <h1 class="page-title">Customer Service Center</h1>
+                    <p class="page-subtitle">
+                        Round Robin Query Scheduling System — Fairly distributing customer workload across available service representatives.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <a href="visualize.html" class="btn btn-primary-custom btn-lg shadow-sm py-3 px-4 d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-play-circle-fill fs-4"></i>
+                        <div class="text-start">
+                            <div class="fw-bold" style="line-height: 1.2;">Start Simulation</div>
+                            <small class="fw-normal opacity-75" style="font-size: 0.78rem;">Live Round Robin</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main class="container px-lg-4 mb-5 flex-grow-1">
+        <!-- Dashboard Stat Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-label">Total Queries</div>
+                            <div class="stat-number" id="statTotalQueries">0</div>
+                        </div>
+                        <div class="stat-icon primary">
+                            <i class="bi bi-inboxes-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                        <small class="text-muted">In Queue &amp; History</small>
+                        <a href="queries.html" class="small fw-semibold text-primary text-decoration-none">View All &rarr;</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card stat-pending">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-label">Pending Queries</div>
+                            <div class="stat-number text-warning" id="statPendingQueries">0</div>
+                        </div>
+                        <div class="stat-icon warning">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Awaiting turn in queue</small>
+                        <span class="badge badge-pending">Waiting</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card stat-completed">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-label">Completed Queries</div>
+                            <div class="stat-number text-success" id="statCompletedQueries">0</div>
+                        </div>
+                        <div class="stat-icon success">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Successfully resolved</small>
+                        <span class="badge badge-completed">Resolved</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card stat-agents">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-label">Available Agents</div>
+                            <div class="stat-number text-info" id="statAvailableAgents">0</div>
+                        </div>
+                        <div class="stat-icon info">
+                            <i class="bi bi-person-check-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                        <small class="text-muted" id="statTotalAgents">3 Service Reps</small>
+                        <a href="agents.html" class="small fw-semibold text-info text-decoration-none">Manage &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions & Round Robin Highlights Banner -->
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="p-3 bg-white border rounded-3 d-flex flex-wrap align-items-center justify-content-between gap-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary text-white py-2 px-3 rounded-pill fw-semibold">
+                            <i class="bi bi-sliders me-1"></i> Current Time Quantum: <span id="statQuantumValue">2</span> Units
+                        </span>
+                        <span class="text-secondary small d-none d-md-inline">
+                            &bull; Preemptive CPU/Agent scheduling with equal time slices
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-outline-custom" data-bs-toggle="modal" data-bs-target="#quickAddQueryModal">
+                            <i class="bi bi-plus-lg me-1"></i> Add Query
+                        </button>
+                        <a href="agents.html" class="btn btn-outline-custom">
+                            <i class="bi bi-person-plus me-1"></i> Manage Agents
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary" id="btnResetDefaults" title="Restore initial sample queries and agents">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Sample Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Column Section: Queries Table and Algorithm Explainer -->
+        <div class="row g-4">
+            <!-- Left Column: Active Queries Table -->
+            <div class="col-lg-7">
+                <div class="custom-card h-100">
+                    <div class="card-header-custom">
+                        <h2 class="card-title-custom">
+                            <i class="bi bi-list-task text-primary"></i> Customer Queries Overview
+                        </h2>
+                        <a href="queries.html" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                            Manage All
+                        </a>
+                    </div>
+                    <div class="card-body-custom p-0">
+                        <div class="table-responsive">
+                            <table class="table table-custom table-hover" id="dashboardQueriesTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer</th>
+                                        <th>Description</th>
+                                        <th>Est. Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboardQueriesTbody">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                                            Loading customer queries from backend...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Theory / Viva Explainer Card -->
+            <div class="col-lg-5">
+                <div class="custom-card h-100">
+                    <div class="card-header-custom">
+                        <h2 class="card-title-custom">
+                            <i class="bi bi-mortarboard-fill text-primary"></i> Round Robin viva Guide
+                        </h2>
+                        <span class="badge bg-light text-secondary border">College OS Project</span>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-1">What is Round Robin (RR)?</h6>
+                            <p class="text-secondary small mb-0">
+                                Round Robin is a preemptive scheduling algorithm where each process (customer query) is given a fixed time slice called the <strong>Time Quantum</strong>.
+                            </p>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-1">How Customer Service Scheduling Works:</h6>
+                            <ul class="text-secondary small ps-3 mb-0">
+                                <li class="mb-1"><strong>Ready Queue:</strong> Queries wait in a FIFO queue for available agents.</li>
+                                <li class="mb-1"><strong>Time Slice:</strong> The agent serves the query for at most <code>Time Quantum</code> units.</li>
+                                <li class="mb-1"><strong>Preemption:</strong> If query requires more time, it is requeued at the tail of the ready queue.</li>
+                                <li class="mb-1"><strong>Completion:</strong> If query finishes within the slice, it is marked Completed and removed.</li>
+                                <li><strong>Multi-Agent Order:</strong> Scheduling turns alternate cyclically among available service representatives.</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-3 bg-light rounded-3 border">
+                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.85rem;">Key Performance Formulas:</h6>
+                            <div class="small font-monospace text-primary mb-1">
+                                &bull; Turnaround Time (TAT) = Completion Time &minus; Arrival Time
+                            </div>
+                            <div class="small font-monospace text-primary">
+                                &bull; Waiting Time (WT) = Turnaround Time &minus; Burst Time
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            <a href="visualize.html" class="btn btn-primary-custom w-100 py-2">
+                                <i class="bi bi-play-circle-fill me-1"></i> Open Live Interactive Visualization
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Quick Add Query Modal -->
+    <div class="modal fade" id="quickAddQueryModal" tabindex="-1" aria-labelledby="quickAddQueryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="quickAddQueryModalLabel">
+                        <i class="bi bi-chat-left-dots text-primary me-2"></i>Add Customer Query
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="quickAddQueryForm">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label for="quickCustomerName" class="form-label fw-semibold">Customer Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="quickCustomerName" placeholder="e.g. Ramesh Verma" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quickQueryDesc" class="form-label fw-semibold">Query Description <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="quickQueryDesc" placeholder="e.g. Mobile Banking OTP Failure" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quickEstimatedTime" class="form-label fw-semibold">Estimated Processing Time (Burst Time) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="quickEstimatedTime" min="1" max="30" value="4" required>
+                            <div class="form-text">Processing units required to solve this query.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom" id="btnSubmitQuickQuery">
+                            <i class="bi bi-check-lg me-1"></i> Add to Queue
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container px-lg-4 text-center">
+            <p class="mb-1 fw-semibold text-dark">Customer Service Center &bull; Round Robin Scheduling Algorithm</p>
+            <p class="mb-0 text-muted small">Built with Java Spring Boot backend &amp; Bootstrap 5. In-Memory Data Storage.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Page Specific Script -->
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

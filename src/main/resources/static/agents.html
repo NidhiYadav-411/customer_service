@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Service Agents - Customer Service Center</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid px-lg-4">
+            <a class="navbar-brand" href="index.html">
+                <div class="brand-icon">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <div>
+                    <div>Customer Service Center</div>
+                    <small class="text-muted fw-normal" style="font-size: 0.72rem; display: block; margin-top: -3px;">Round Robin Query Scheduler</small>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="bi bi-grid-1x2-fill me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="queries.html"><i class="bi bi-chat-left-text me-1"></i> Customer Queries</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="agents.html"><i class="bi bi-people me-1"></i> Service Agents</a>
+                    </li>
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                        <a class="btn btn-nav-visualize" href="visualize.html">
+                            <i class="bi bi-play-circle-fill me-1"></i> Visualize Round Robin Process
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-hero">
+        <div class="container px-lg-4">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="badge bg-primary-subtle text-primary mb-2 fw-semibold px-3 py-1 rounded-pill">
+                        <i class="bi bi-person-badge-fill me-1"></i> Multi-Agent Workforce Setup
+                    </div>
+                    <h1 class="page-title">Manage Service Agents</h1>
+                    <p class="page-subtitle">
+                        Configure customer service representatives who will handle query time slices in Round Robin order.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <a href="visualize.html" class="btn btn-primary-custom py-2 px-4 shadow-sm">
+                        <i class="bi bi-play-circle-fill me-1"></i> Go to Simulation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container px-lg-4 mb-5 flex-grow-1">
+        <div class="row g-4">
+            <!-- Add Agent Form Column -->
+            <div class="col-lg-4">
+                <div class="custom-card sticky-lg-top" style="top: 85px; z-index: 10;">
+                    <div class="card-header-custom">
+                        <h2 class="card-title-custom">
+                            <i class="bi bi-person-plus text-primary"></i> Add Service Agent
+                        </h2>
+                    </div>
+                    <div class="card-body-custom">
+                        <form id="addAgentForm" novalidate>
+                            <div class="mb-3">
+                                <label for="agentName" class="form-label fw-semibold">
+                                    Agent Name <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control" id="agentName" placeholder="e.g. Agent Meera" required>
+                                </div>
+                                <div class="invalid-feedback" id="agentNameFeedback">
+                                    Please enter a valid agent name.
+                                </div>
+                                <div class="form-text">Agent names must be unique to prevent confusion.</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-custom w-100 py-2" id="btnAddAgent">
+                                <i class="bi bi-person-check-fill me-1"></i> Register Agent
+                            </button>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <div class="bg-light p-3 rounded-3 border">
+                            <h6 class="fw-bold mb-2 small text-dark"><i class="bi bi-info-circle text-primary me-1"></i> How Agents Are Scheduled:</h6>
+                            <p class="small text-secondary mb-0">
+                                In this Round Robin model, customer queries waiting in the FIFO Ready Queue are popped one-by-one and assigned to agents in cyclical order: <code>Agent 1 &rarr; Agent 2 &rarr; Agent 3 &rarr; Agent 1...</code>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agents List Column -->
+            <div class="col-lg-8">
+                <!-- Agent Cards Grid -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0">
+                        <i class="bi bi-grid-fill text-primary me-1"></i> Active Representatives (<span id="agentsCount">0</span>)
+                    </h5>
+                    <button class="btn btn-sm btn-outline-primary" id="btnRefreshAgents">
+                        <i class="bi bi-arrow-repeat me-1"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="row g-3 mb-4" id="agentCardsContainer">
+                    <div class="col-12 text-center py-4 text-muted">
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                        Loading agents from backend...
+                    </div>
+                </div>
+
+                <!-- Agents Detailed Table -->
+                <div class="custom-card">
+                    <div class="card-header-custom">
+                        <h2 class="card-title-custom">
+                            <i class="bi bi-card-list text-primary"></i> Agents Workload &amp; Status Table
+                        </h2>
+                    </div>
+                    <div class="card-body-custom p-0">
+                        <div class="table-responsive">
+                            <table class="table table-custom table-hover align-middle mb-0" id="agentsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Agent Name</th>
+                                        <th>Status</th>
+                                        <th>Current Customer</th>
+                                        <th>Turns Served</th>
+                                        <th>Total Time</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="agentsTableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-muted">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container px-lg-4 text-center">
+            <p class="mb-1 fw-semibold text-dark">Customer Service Center &bull; Round Robin Scheduling Algorithm</p>
+            <p class="mb-0 text-muted small">Java Spring Boot + In-Memory Collections (Queue &amp; ArrayList)</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script -->
+    <script src="js/agents.js"></script>
+</body>
+</html>
